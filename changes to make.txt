@@ -1,0 +1,65 @@
+part 1 (hw9):
+Grader comments: (92/100)
+Very good job overall, everything works, the code is neat, just a couple of things:
+1. I had to figure out my own compiling instructions! Not hard, but also not hard to slap that one line in the readme.
+2. Very little use of STL. e.g. at one point you check to see if a number is already in your list of numbers by writing a loop; there is a function in <algorithm> (A library you may wish to familiarize yourself with) called std::find which does this. I think c++20 vectors also have a .contains method (though I would have to look that up).
+92/100
+Also sorry it took me so long :)
+
+part 2 (hw10):
+Grader comments: (90/100)
+Your fitness function allows for a potential division by zero error (-2)
+The is_valid function takes more than linear time, since it has to sort a copy of the ordering, and could be made faster (-1)
+In compute_next_generation, you overwrite the population by assigning the new population to the pop_ variable without deleting the previous population; this causes a big memory leak with each population. (-7)
+Good work overall on the assignment!
+
+part 3 (hw11):
+Grader comments: (93/100)
+* README
+The README is great! If I had to quibble over one thing, you can host
+`comparison.gif` directly in your github repository. ![Alt
+Text](https://cdn.discordapp.com/attachments/837826377389965333/842172716153176064/comparison.gif)
+can be replaced with ![comparison graph](./comparison.gif).
+
+That you are using `git` is excellent. Again, if I had to quibble, `*.o` and
+compiled binaries probably should not be in the repo. They are specific to the
+architecture and OS of the compiling computer.
+
+* Compilation
+It compiled fine on linux. Your Makefile looks good.
+
+* (-3) Override Mutation
+-3 For including `algorithm`, `chrono` and `iostream` in `climb_chromosome.cc`.
+You should only include files that you use. If you were using `iostream` for
+debugging, it should be removed when debugging is over. Otherwise everything
+looks good.
+
+You have chromTwo holding the fitness of variationOne, and chromThree holding
+the fitness of variationTwo. This makes it harder to read your code, but I
+wont't take points off for it.
+
+* (-4) Override selection operation
+Your code is correct, but there is a better way to implement `select_parent`.
+The following is sufficient:
+
+```cpp
+Chromosome* TournamentDeme::select_parent()
+{
+std::vector<Chromosome *> matchup(numParents);
+std::sample(pop_.begin(), pop_.end(), matchup.begin(), numParents,
+generator_);
+return *std::max_element(matchup.begin(), matchup.end(),
+[](auto fst, auto scnd) {
+return fst->get_fitness() < scnd->get_fitness();
+});
+}
+```
+
+Because numbers are ordered (A < B < C => A < C), tournament selection has the
+same result as just taking the max.
+
+You lose 4 points for unnecessary includes in `tournament_deme.cc`.
+
+* Reporting
+Adding a title and units would result in a much better graph. That said, you
+earned full points here.
